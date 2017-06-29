@@ -2,7 +2,7 @@
 
 #include "piece.h"
 
-class Bishop : Piece
+class Bishop : public Piece
 {
 	private:
 		const int direction[4] = {-11, -9, 9, 11};
