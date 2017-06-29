@@ -1,17 +1,18 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include "global_init.h"
 
 int main()
 {
 	SDL_Init(SDL_INIT_VIDEO);
 
-	SDL_Window *window = SDL_CreateWindow("Chess",
-						SDL_WINDOWPOS_UNDEFINED,
-						SDL_WINDOWPOS_UNDEFINED,
-						640, 480,
-						SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("Chess",
+					SDL_WINDOWPOS_UNDEFINED,
+					SDL_WINDOWPOS_UNDEFINED,
+					640, 480,
+					SDL_WINDOW_SHOWN);
 
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);	
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);	
 
 	SDL_Event e;
 
@@ -50,6 +51,27 @@ int main()
 
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 		SDL_RenderClear(renderer);
+
+		SDL_Rect tile = { 0, 0, TILE_SIZE, TILE_SIZE};
+
+		for(int i = 0; i < 64; i++)
+		{
+			tile.x = TILE_SIZE * (i%8);
+
+			tile.y = TILE_SIZE * (i/8);
+			if(tile_colour[i] == 0)
+			{
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+			}
+			else
+			{
+				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+			}
+
+			SDL_RenderFillRect(renderer, &tile);
+		}
+
+
 		SDL_RenderPresent(renderer);
 
 		// Run at 30 frames per second
