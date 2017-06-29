@@ -1,0 +1,13 @@
+#pragma once
+
+#include "piece.h"
+
+class Bishop : Piece
+{
+	private:
+		const int direction[4] = {-11, -9, 9, 11};
+
+	public:
+		Bishop(int position120, Colour colour, bool firstMove);
+
+};
