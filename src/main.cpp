@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include "global_init.h"
+#include "global_defs.h"
 
 int main()
 {
@@ -13,6 +14,10 @@ int main()
 					SDL_WINDOW_SHOWN);
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);	
+
+	initBoard120to64();
+	game.initAssets();
+	game.newBoard();
 
 	SDL_Event e;
 
@@ -49,30 +54,7 @@ int main()
 
 		// Draw the screen
 
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-		SDL_RenderClear(renderer);
-
-		SDL_Rect tile = { 0, 0, TILE_SIZE, TILE_SIZE};
-
-		for(int i = 0; i < 64; i++)
-		{
-			tile.x = TILE_SIZE * (i%8);
-
-			tile.y = TILE_SIZE * (i/8);
-			if(tile_colour[i] == 0)
-			{
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-			}
-			else
-			{
-				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-			}
-
-			SDL_RenderFillRect(renderer, &tile);
-		}
-
-
-		SDL_RenderPresent(renderer);
+		game.drawBoard();	
 
 		// Run at 30 frames per second
 
