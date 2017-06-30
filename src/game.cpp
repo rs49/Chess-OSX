@@ -1,5 +1,6 @@
 #include "game.h"
 #include "global_init.h"
+//#include "piece.h"
 //#include <SDL2/SDL.h>
 //#include <SDL2_image/SDL_image.h>
 
@@ -38,11 +39,63 @@ void Game::newBoard()
 	mBoard.setCurrPlayer(WHITE);
 	mSelectedTile = 120;
 	mSelectedPiece = 0;
+
 }
 
 void Game::selectTile(int position)
 {
+	// If the same tile is selected, turn it off
+	if(position == mSelectedTile)
+	{
+		position = 120;
+		mSelectedPiece =0;
+	}
+	else if(mSelectedPiece)
+	{
+		list<Piece*> playerPieces;
+		list<Piece*>::iterator piece_it;
+
+		(mBoard.getCurrPlayer() == WHITE)
+		? playerPieces = mBoard.getWhitePieces() :
+		  playerPieces = mBoard.getBlackPieces();
+		
+		// find the piece
+		for(piece_it=playerPieces.begin(); piece_it != playerPieces.end(); piece_it++)
+		{
+			if( board120to64[ (*piece_it)->getPosition() ] == mSelectedTile)
+			{
+				list<uint32_t>::iterator move_it;
+				list<uint32_t> moveList = (*piece_it)->getPotentialMoves(mBoard.getGameBitBoard());
+
+				for(move_it=moveList.begin(); move_it != moveList.end(); move_it++)
+				{
+					if( board120to64[ ((*move_it)>>7)&0x7f ] == position)
+					{
+						mBoard.movePiece(*move_it);
+						position = 120;
+						mSelectedPiece = 0;
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+
 	mSelectedTile = position;
+
+	if(mBoard.isWhitePiece(position))
+	{
+		mSelectedPiece = 1;
+	}
+	else if (mBoard.isBlackPiece(position))
+	{
+		mSelectedPiece = 1;
+	}
+	else
+	{
+		mSelectedPiece = 0;
+	}
 }
 
 void Game::drawBoard()
@@ -51,6 +104,8 @@ void Game::drawBoard()
 	SDL_RenderClear(renderer);
 
 	SDL_Rect tile = { 0, 0, TILE_SIZE, TILE_SIZE};
+
+	// Draw tiled board
 
 	for(int i = 0; i < 64; i++)
 	{
@@ -73,12 +128,46 @@ void Game::drawBoard()
 
 		SDL_RenderFillRect(renderer, &tile);
 	}
-	
-	//draw the pieces on the board
-	//drawPiece(WHITE, ROOK, 22);
+
+	// draw moves for potential moves
 	list<Piece*>::iterator it;
 	list<Piece*> currList;
 
+	list<uint32_t> moveList;
+	list<uint32_t>::iterator move_it;
+	int position64;
+	
+	if(mSelectedPiece)
+	{
+		SDL_SetRenderDrawColor(renderer, 50, 50, 200, 0);
+
+		(mBoard.getCurrPlayer() == WHITE)
+		? currList = mBoard.getWhitePieces() :
+		  currList = mBoard.getBlackPieces();
+
+		for(it = currList.begin(); it != currList.end(); it++)
+		{
+			if( board120to64[ (*it)->getPosition() ] == mSelectedTile )
+			{
+				moveList = (*it)->getPotentialMoves(mBoard.getGameBitBoard());
+				break;
+			}
+		}
+
+		for(move_it = moveList.begin(); move_it != moveList.end(); move_it++)
+		{
+			position64 = board120to64[  ((*move_it)>>7)&0x7f ];
+
+			tile.x = TILE_SIZE*(position64%8);
+			tile.y = TILE_SIZE*(7-position64/8);
+
+			SDL_RenderFillRect(renderer, &tile);
+		}
+	}
+	
+	//draw the pieces on the board
+	//drawPiece(WHITE, ROOK, 22);
+	
 	currList = mBoard.getWhitePieces();
 	for( it=currList.begin(); it != currList.end(); it++ )
 	{

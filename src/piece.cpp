@@ -1,4 +1,5 @@
 #include "piece.h"
+#include "gameBitBoard.h"
 
 Piece::Piece(int position120, Colour colour, PieceType pieceType, bool firstMove)
 {
@@ -45,7 +46,7 @@ void Piece::setFirstMoveFalse()
 	mFirstMove = false;
 }
 
-list<uint32_t> Piece::getPotentialMoves()
+list<uint32_t> Piece::getPotentialMoves(GameBitBoard gameBitBoard)
 {
 	list<uint32_t> moves;
 	return moves;

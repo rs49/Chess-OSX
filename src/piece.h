@@ -5,6 +5,8 @@
 
 using namespace std;
 
+class GameBitBoard;
+
 class Piece
 {
 	private:
@@ -24,6 +26,6 @@ class Piece
 		bool isFirstMove();
 		void setFirstMoveFalse();
 		//void setFirstMove(bool firstMove);			// Might not be needed
-		virtual list<uint32_t> getPotentialMoves();
+		virtual list<uint32_t> getPotentialMoves(GameBitBoard gameBitBoard);
 		//list<uint32_t> getLegalMoves();
 };

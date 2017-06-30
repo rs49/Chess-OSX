@@ -9,6 +9,6 @@ class Rook : public Piece
 
 	public:
 		Rook(int position120, Colour colour, bool firstMove);
-		//list<uint32_t> getPotentialMoves();
+		list<uint32_t> getPotentialMoves(GameBitBoard gameBitBoard);
 };
 
