@@ -40,6 +40,11 @@ void Game::newBoard()
 	mSelectedPiece = 0;
 }
 
+void Game::selectTile(int position)
+{
+	mSelectedTile = position;
+}
+
 void Game::drawBoard()
 {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
@@ -51,8 +56,13 @@ void Game::drawBoard()
 	{
 		tile.x = TILE_SIZE * (i%8);
 
-		tile.y = TILE_SIZE * (i/8);
-		if(tile_colour[i] == 0)
+		tile.y = TILE_SIZE * (7-i/8);
+		if( mSelectedTile == i)
+		{
+			SDL_SetRenderDrawColor(renderer, 0, 255, 0, 0);
+
+		}
+		else if(tile_colour[i] == 0)
 		{
 			SDL_SetRenderDrawColor(renderer, 162, 103, 0, 0);
 		}

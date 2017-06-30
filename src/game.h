@@ -29,6 +29,7 @@ class Game
 
 	public:
 		void newBoard();
+		void selectTile(int position);
 		void drawBoard();
 		void drawPiece(Colour colour, PieceType pieceType, int position120);
 		void initAssets();

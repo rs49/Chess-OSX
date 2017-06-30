@@ -38,7 +38,7 @@ int main()
 				run = 0;
 			}
 
-			if( e.type == SDL_KEYDOWN )
+			else if( e.type == SDL_KEYDOWN )
 			{
 				switch( e.key.keysym.sym )
 				{
@@ -47,6 +47,28 @@ int main()
 							run = 0;
 							break;
 						}
+				}
+			}
+			else if( e.type == SDL_MOUSEBUTTONDOWN )
+			{
+				int x, y;
+
+				SDL_GetMouseState(&x, &y);
+				
+				if(x<480)
+				{
+					x = x/TILE_SIZE+1;
+					y = y/TILE_SIZE;
+					y = 8-y;
+
+					int position64 = (y-1)*8 + (x-1);
+					int position120 = 21 + x + 10*(y-1);
+
+					if( (position120 > 21) && (position120 < 100) )
+					{
+						game.selectTile(position64);
+						printf("Tile selected: %d\n", position64);
+					}
 				}
 			}
 
