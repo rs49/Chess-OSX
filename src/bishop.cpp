@@ -69,6 +69,10 @@ list<uint32_t> Bishop::getPotentialMoves(GameBitBoard gameBitBoard)
 					break;
 				}
 			}
+			else
+			{
+				break;
+			}
 		}
 
 	}

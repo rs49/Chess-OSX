@@ -52,11 +52,11 @@ bool GameBitBoard::isWhitePiece(int position64)
 {
 	if( ( uint64_t(1) << position64 ) & mWhiteBitBoard )
 	{
-		return false;
+		return true;
 	}
 	else
 	{
-		return true;
+		return false;
 	}
 }
 
@@ -64,11 +64,11 @@ bool GameBitBoard::isBlackPiece(int position64)
 {
 	if( ( uint64_t(1) << position64 ) & mBlackBitBoard )
 	{
-		return false;
+		return true;
 	}
 	else
 	{
-		return true;
+		return false;
 	}
 }
 
