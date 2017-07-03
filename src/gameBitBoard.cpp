@@ -92,3 +92,49 @@ void GameBitBoard::setEnPas(int square120)
 	mEnPas = square120;
 }
 	
+void GameBitBoard::moveUpdateBitBoard(Colour colour, uint32_t move)
+{
+	int start = (move)&0x7f;
+	int dest=(move >> 7)&0x7f;
+
+	int start64=board120to64[start];
+	int dest64=board120to64[dest];
+	
+	/*if ((move >> 14)&uint32_t(1))
+	{
+		if( colour == WHITE )
+		{
+			blackBitBoard &= ~(uint64_t(1)<<dest64);
+		}
+		else
+		{
+			whiteBitBoard &= ~(uint64_t(1)<<dest64);
+		}
+	}*/
+
+	if(colour == WHITE)
+	{
+		mWhiteBitBoard &= ~(uint64_t(1)<<start64);
+		mWhiteBitBoard |= (uint64_t(1)<<dest64);
+	}
+	else
+	{
+		mBlackBitBoard &= ~(uint64_t(1)<<start64);
+		mBlackBitBoard |= (uint64_t(1)<<dest64);
+
+	}
+
+
+	if (start == mWhiteKingPosition120)
+	{
+		mWhiteKingPosition120 = dest;
+	}
+
+	if (start == mBlackKingPosition120)
+	{
+		mBlackKingPosition120 = dest;
+	}
+
+	mBothBitBoards = mWhiteBitBoard | mBlackBitBoard;
+
+}

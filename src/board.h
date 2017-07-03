@@ -31,6 +31,9 @@ class Board
 		bool isBlackPiece(int position64);
 		bool isCurrPlayerInCheck();
 		bool isCurrPlayerInCheckmate();
+		Piece getPieceAtPosition(int position120);
+		bool isPlayerAttackingKing(Colour colour, GameBitBoard testBoard);
+
 };
 
 

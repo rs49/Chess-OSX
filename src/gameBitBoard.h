@@ -21,5 +21,7 @@ class GameBitBoard
 		int getBlackKing();
 		int getEnPas();
 		void setEnPas(int square120);
+		void moveUpdateBitBoard(Colour colour, uint32_t move);
+
 };
 

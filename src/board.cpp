@@ -85,20 +85,20 @@ void Board::addPiece(int position120, Colour colour, PieceType pieceType, bool f
 
 void Board::removePiece(int position120)
 {
-	list<Piece*> playerPieces;
+	list<Piece*> *playerPieces;
 	list<Piece*>::iterator piece_it;
 
 	int position64 = board120to64[position120];
 
 	mGameBitBoard.isWhitePiece(position64) ? 
-		playerPieces = mWhitePieces : playerPieces = mBlackPieces;
+		playerPieces = &mWhitePieces : playerPieces = &mBlackPieces;
 
-	for(piece_it=playerPieces.begin(); piece_it != playerPieces.end(); piece_it++)
+	for(piece_it=playerPieces->begin(); piece_it != playerPieces->end(); piece_it++)
 	{
-		if ( (*piece_it)->getPosition() == position64 )
+		if ( (*piece_it)->getPosition() == position120 )
 		{
 			delete *piece_it;
-			playerPieces.erase(piece_it);
+			playerPieces->erase(piece_it);
 			break;
 		}
 	}
@@ -117,7 +117,7 @@ void Board::movePiece(uint32_t move)
 	list<Piece*>::iterator piece_it;
 
 	mCurrPlayer == WHITE ? 
-		playerPieces = mWhitePieces : playerPieces = mBlackPieces;
+		playerPieces = getWhitePieces() : playerPieces = getBlackPieces();
 
 	for(piece_it = playerPieces.begin(); piece_it !=playerPieces.end(); piece_it++)
 	{
@@ -137,8 +137,22 @@ void Board::movePiece(uint32_t move)
 
 			mGameBitBoard.update(mWhitePieces, mBlackPieces, 120);
 
+			if(isPlayerAttackingKing(mCurrPlayer,mGameBitBoard))
+			{
+				mCurrPlayerInCheck = true;
+				printf("Check");
+			}
+			else
+			{
+				mCurrPlayerInCheck = false;
+			}
+
 			mCurrPlayer == WHITE ? mCurrPlayer = BLACK : mCurrPlayer = WHITE;
 
+			/*if(isCurrPlayerInCheckmate())
+			{
+				printf("checkmate\n");
+			}*/
 			break;
 		}
 	}
@@ -177,6 +191,107 @@ bool Board::isCurrPlayerInCheck()
 
 bool Board::isCurrPlayerInCheckmate()
 {
-	return mCurrPlayerInCheckmate;
+	list<Piece*> playerPieces;
+
+	list<Piece*>::iterator it;
+
+	(mCurrPlayer == WHITE)
+	? playerPieces = getWhitePieces() : playerPieces = getBlackPieces();
+
+	list<uint32_t> moveList;
+	list<uint32_t>::iterator move_it;
+
+	for(it=playerPieces.begin(); it != playerPieces.end(); it++)
+	{
+		moveList = (*it)->getLegalMoves(this);
+		if (moveList.size() > 0)
+		{
+			return false;
+		}
+		//printf("checking player Pieces\n");
+
+	}
+
+	mCurrPlayerInCheckmate = true;
+
+
+	return true;}
+
+Piece Board::getPieceAtPosition(int position120)
+{
+	list<Piece*> *playerPieces;
+	list<Piece*>::iterator it;
+
+	int position64=board120to64[position120];
+
+	if (mGameBitBoard.isWhitePiece(position64))
+	{
+		playerPieces = &mWhitePieces;
+	}
+	else
+	{
+		playerPieces = &mBlackPieces;
+	}
+
+	for(it=playerPieces->begin(); it != playerPieces->end(); it++)
+	{
+		if ( (*it)->getPosition() == position120 )
+		{
+			return (**it);
+		}
+	}
+
+	return (**it);
+
+}
+
+bool Board::isPlayerAttackingKing(Colour colour, GameBitBoard testBoard)
+{
+	list<Piece*> playerPieces;
+	list<Piece*> otherPlayerPieces;
+
+	list<Piece*>::iterator it;
+
+	list<uint32_t> moveList;
+	list<uint32_t>::iterator move_it;
+
+	uint32_t kingPosition120;
+
+
+	if(colour == WHITE)
+	{
+		playerPieces = getWhitePieces();
+		kingPosition120 = testBoard.getBlackKing();
+	}
+	else
+	{
+		playerPieces = getBlackPieces();
+		kingPosition120 = testBoard.getWhiteKing();
+
+	}
+
+
+
+	for(it=playerPieces.begin(); it != playerPieces.end(); it++)
+	{
+		moveList = (*it)->getPotentialMoves(testBoard);
+		//printf("checking player Pieces\n");
+
+		for (move_it = moveList.begin(); move_it != moveList.end(); move_it++)
+		{
+			if (*move_it>>14==1) //check if it is attacking move
+			{
+				//printf("checking attacking move: %d\t king at: %d\n",((*move_it>>7) & 0x7f), kingPosition120);
+				if( ((*move_it>>7) & 0x7f) == kingPosition120)
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+
+	return false;
+
 }
 

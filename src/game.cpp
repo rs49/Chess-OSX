@@ -65,7 +65,7 @@ void Game::selectTile(int position)
 			if( board120to64[ (*piece_it)->getPosition() ] == mSelectedTile)
 			{
 				list<uint32_t>::iterator move_it;
-				list<uint32_t> moveList = (*piece_it)->getPotentialMoves(mBoard.getGameBitBoard());
+				list<uint32_t> moveList = (*piece_it)->getLegalMoves(&mBoard);
 
 				for(move_it=moveList.begin(); move_it != moveList.end(); move_it++)
 				{
@@ -150,7 +150,7 @@ void Game::drawBoard()
 		{
 			if( board120to64[ (*it)->getPosition() ] == mSelectedTile )
 			{
-				moveList = (*it)->getPotentialMoves(mBoard.getGameBitBoard());
+				moveList = (*it)->getLegalMoves(&mBoard);
 				break;
 			}
 		}
