@@ -149,10 +149,10 @@ void Board::movePiece(uint32_t move)
 
 			mCurrPlayer == WHITE ? mCurrPlayer = BLACK : mCurrPlayer = WHITE;
 
-			/*if(isCurrPlayerInCheckmate())
+			if(isCurrPlayerInCheckmate())
 			{
 				printf("checkmate\n");
-			}*/
+			}
 			break;
 		}
 	}
@@ -214,7 +214,6 @@ bool Board::isCurrPlayerInCheckmate()
 
 	mCurrPlayerInCheckmate = true;
 
-
 	return true;}
 
 Piece Board::getPieceAtPosition(int position120)
@@ -224,14 +223,8 @@ Piece Board::getPieceAtPosition(int position120)
 
 	int position64=board120to64[position120];
 
-	if (mGameBitBoard.isWhitePiece(position64))
-	{
-		playerPieces = &mWhitePieces;
-	}
-	else
-	{
-		playerPieces = &mBlackPieces;
-	}
+	(mGameBitBoard.isWhitePiece(position64)
+	? playerPieces = &mWhitePieces : playerPieces = &mBlackPieces ;
 
 	for(it=playerPieces->begin(); it != playerPieces->end(); it++)
 	{

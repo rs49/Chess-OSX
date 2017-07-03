@@ -49,7 +49,6 @@ list<uint32_t> Knight::getPotentialMoves(GameBitBoard gameBitBoard)
 					}
 				}
 			}
-
 	}
 
 	return moves;

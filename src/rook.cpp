@@ -70,6 +70,10 @@ list<uint32_t> Rook::getPotentialMoves(GameBitBoard gameBitBoard)
 					break;
 				}
 			}
+			else
+			{
+				break;
+			}
 		}
 
 	}

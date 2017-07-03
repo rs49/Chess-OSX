@@ -35,6 +35,7 @@ list<uint32_t> Bishop::getPotentialMoves(GameBitBoard gameBitBoard)
 
 		while(1)
 		{
+			moveToAdd = uint32_t(getPosition());
 			testTile = testTile + direction[i];
 			testTile64 = board120to64[ testTile ];
 
