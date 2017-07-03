@@ -29,12 +29,13 @@ list<uint32_t> Rook::getPotentialMoves(GameBitBoard gameBitBoard)
 	
 	for(int i = 0; i<num_direction; i++)
 	{
-		moveToAdd = uint32_t(getPosition());
+		//moveToAdd = uint32_t(getPosition());
 
 		testTile = getPosition();
 
 		while(1)
 		{
+			moveToAdd = uint32_t(getPosition());
 			testTile = testTile + direction[i];
 			testTile64 = board120to64[ testTile ];
 

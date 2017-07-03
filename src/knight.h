@@ -9,4 +9,5 @@ class Knight : public Piece
 
 	public:
 		Knight(int position120, Colour colour, bool firstMove);
+		list<uint32_t> getPotentialMoves(GameBitBoard gameBitBoard);
 };

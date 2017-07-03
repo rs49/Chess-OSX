@@ -6,7 +6,7 @@ void initBoard120to64()
 {
 	for(int i = 0; i < 120; i++)
 	{
-		board120to64[i] = 0;
+		board120to64[i] = 120;
 	}
 
 	for(int x = 0; x < 8; x++)

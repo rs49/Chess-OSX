@@ -69,6 +69,7 @@ void Game::selectTile(int position)
 
 				for(move_it=moveList.begin(); move_it != moveList.end(); move_it++)
 				{
+					printf("%lu\n",moveList.size());
 					if( board120to64[ ((*move_it)>>7)&0x7f ] == position)
 					{
 						mBoard.movePiece(*move_it);
@@ -157,6 +158,7 @@ void Game::drawBoard()
 		for(move_it = moveList.begin(); move_it != moveList.end(); move_it++)
 		{
 			position64 = board120to64[  ((*move_it)>>7)&0x7f ];
+			//printf("%lu\n", position64);
 
 			tile.x = TILE_SIZE*(position64%8);
 			tile.y = TILE_SIZE*(7-position64/8);
