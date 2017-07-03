@@ -69,7 +69,6 @@ void Game::selectTile(int position)
 
 				for(move_it=moveList.begin(); move_it != moveList.end(); move_it++)
 				{
-					printf("%lu\n",moveList.size());
 					if( board120to64[ ((*move_it)>>7)&0x7f ] == position)
 					{
 						mBoard.movePiece(*move_it);
@@ -158,7 +157,6 @@ void Game::drawBoard()
 		for(move_it = moveList.begin(); move_it != moveList.end(); move_it++)
 		{
 			position64 = board120to64[  ((*move_it)>>7)&0x7f ];
-			//printf("%lu\n", position64);
 
 			tile.x = TILE_SIZE*(position64%8);
 			tile.y = TILE_SIZE*(7-position64/8);
@@ -168,7 +166,6 @@ void Game::drawBoard()
 	}
 	
 	//draw the pieces on the board
-	//drawPiece(WHITE, ROOK, 22);
 	
 	currList = mBoard.getWhitePieces();
 	for( it=currList.begin(); it != currList.end(); it++ )
@@ -181,6 +178,33 @@ void Game::drawBoard()
 	{
 		drawPiece( (*it)->getColour(), (*it)->getPieceType(), (*it)->getPosition() );
 	}
+	
+
+
+	SDL_Rect renderQuad = { 500, 10, 120, 60 };
+
+	// Draw if it is check or checkmate
+	if (mBoard.isCurrPlayerInCheckmate())
+	{
+		renderQuad.y = 100;
+		SDL_RenderCopy(renderer, mCheckmateTexture, NULL, &renderQuad) ;
+
+	}
+	else
+	{	
+		if (mBoard.getCurrPlayer() == WHITE)
+			SDL_RenderCopy(renderer, mWhiteTurnTexture, NULL, &renderQuad) ;
+		else
+			SDL_RenderCopy(renderer, mBlackTurnTexture, NULL, &renderQuad) ;
+		
+		renderQuad.y = 200;
+		if(mBoard.isCurrPlayerInCheck())
+		{
+			SDL_RenderCopy(renderer, mCheckTexture, NULL, &renderQuad) ;
+		}
+	}
+
+
 	
 
 	
@@ -274,6 +298,31 @@ void Game::initAssets()
 	loadTexture(&mBlackRookTexture,"60_png/BlackRook.png");
 	loadTexture(&mBlackQueenTexture,"60_png/BlackQueen.png");
 	loadTexture(&mBlackKingTexture,"60_png/BlackKing.png");
+
+	loadTexture(&mWhiteTurnTexture,"buttons/whiteturn.png");
+	loadTexture(&mBlackTurnTexture,"buttons/blackturn.png");
+
+	loadTexture(&mCheckTexture,"buttons/check.png");
+	loadTexture(&mCheckmateTexture,"buttons/checkmate.png");
+
+	loadTexture(&mNewGameTexture,"buttons/newGame.png");
+	loadTexture(&mNewGameTexture_mouseover,"buttons/newGame_mouseover.png");
+	loadTexture(&mExitTexture,"buttons/exit.png");
+	loadTexture(&mExitTexture_mouseover,"buttons/exit_mouseover.png");
+
+	SDL_Rect button;
+
+	button.x = 640/2 - 60;
+	button.y = 200;
+	button.w = 120;
+	button.h = 50;
+
+	mMainMenu_NewGame = button;
+	
+	button.y = 300;
+	mMainMenu_Exit = button;
+
+
 }
 
 void Game::loadTexture(SDL_Texture **targetTexture, string pathName)
@@ -284,12 +333,64 @@ void Game::loadTexture(SDL_Texture **targetTexture, string pathName)
 		printf("Failed load surface\n");
 	}
 	
-	//SDL_SetColorKey(surface, SDL_TRUE, SDL_MapRGB(surface->format, 0, 0xff, 0
-	
 	*targetTexture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	if( targetTexture == NULL )
 	{
 		printf("Failed loading texture: %s\n%s\n", pathName.c_str(), SDL_GetError());
 	}
+}
+
+void Game::drawMainMenu(int mouseX, int mouseY)
+{
+	SDL_RenderClear(renderer);
+
+	(isPointInsideBox(mouseX, mouseY, mMainMenu_NewGame))
+	? SDL_RenderCopy(renderer, mNewGameTexture, NULL, &mMainMenu_NewGame) :
+	  SDL_RenderCopy(renderer, mNewGameTexture_mouseover, NULL, &mMainMenu_NewGame);
+
+	(isPointInsideBox(mouseX, mouseY, mMainMenu_Exit))
+	? SDL_RenderCopy(renderer, mExitTexture, NULL, &mMainMenu_Exit) :
+	  SDL_RenderCopy(renderer, mExitTexture_mouseover, NULL, &mMainMenu_Exit);
+
+	SDL_RenderPresent(renderer);
+}
+
+bool Game::isPointInsideBox(int x, int y, SDL_Rect box)
+{
+	if( (x > box.x) &&
+		( x < (box.x+box.w) ) &&
+		 ( y > box.y ) &&
+		 ( y < (box.y+box.h) ) )
+	{
+		return true;
+	}
+
+	return false;
+}
+
+void Game::mouseButtonEvent(int mouseX, int mouseY)
+{
+	if (mGameState == MAINMENU)
+	{
+		if(isPointInsideBox(mouseX, mouseY, mMainMenu_NewGame))
+		{
+			mGameState = PLAYING;
+			mBoard.clearBoard();
+			newBoard();
+		}
+	}
+	else if (mGameState == PLAYING)
+	{
+	}
+	else if (mGameState == OPTIONS)
+	{
+	}
+
+
+}
+
+GameState Game::getGameState()
+{
+	return mGameState;
 }

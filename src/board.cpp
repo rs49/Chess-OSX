@@ -83,6 +83,26 @@ void Board::addPiece(int position120, Colour colour, PieceType pieceType, bool f
 	
 }
 
+void Board::clearBoard()
+{
+	list<Piece*>::iterator piece_it;
+	
+	for(piece_it=mWhitePieces.begin(); piece_it != mWhitePieces.end(); piece_it++)
+	{
+		delete *piece_it;
+		mWhitePieces.erase(piece_it);
+	}
+
+	for(piece_it=mBlackPieces.begin(); piece_it != mBlackPieces.end(); piece_it++)
+	{
+		delete *piece_it;
+		mWhitePieces.erase(piece_it);
+	}
+
+
+
+}
+
 void Board::removePiece(int position120)
 {
 	list<Piece*> *playerPieces;
@@ -223,7 +243,7 @@ Piece Board::getPieceAtPosition(int position120)
 
 	int position64=board120to64[position120];
 
-	(mGameBitBoard.isWhitePiece(position64)
+	(mGameBitBoard.isWhitePiece(position64))
 	? playerPieces = &mWhitePieces : playerPieces = &mBlackPieces ;
 
 	for(it=playerPieces->begin(); it != playerPieces->end(); it++)

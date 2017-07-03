@@ -3,6 +3,11 @@
 #include "global_init.h"
 #include "global_defs.h"
 
+
+void parseInputs(int mouseX, int mouseY, SDL_Event *e);
+
+int run = 1;
+
 int main()
 {
 	SDL_Init(SDL_INIT_VIDEO);
@@ -21,7 +26,8 @@ int main()
 
 	SDL_Event e;
 
-	int run = 1;
+	
+	int x, y;
 
 	Uint32 startTick, elapsed;
 
@@ -29,54 +35,25 @@ int main()
 	{
 		startTick = SDL_GetTicks();
 
+		
+
+		SDL_GetMouseState(&x, &y);
+
+
 		// Parse Inputs/Events
+		
+		parseInputs(x, y, &e);
 	
-		while( SDL_PollEvent(&e) != 0 )
-		{
-			if( e.type == SDL_QUIT )
-			{
-				run = 0;
-			}
-
-			else if( e.type == SDL_KEYDOWN )
-			{
-				switch( e.key.keysym.sym )
-				{
-					case SDLK_q:
-						{
-							run = 0;
-							break;
-						}
-				}
-			}
-			else if( e.type == SDL_MOUSEBUTTONDOWN )
-			{
-				int x, y;
-
-				SDL_GetMouseState(&x, &y);
-				
-				if(x<480)
-				{
-					x = x/TILE_SIZE+1;
-					y = y/TILE_SIZE;
-					y = 8-y;
-
-					int position64 = (y-1)*8 + (x-1);
-					int position120 = 21 + x + 10*(y-1);
-
-					if( (position120 > 21) && (position120 < 100) )
-					{
-						game.selectTile(position64);
-						printf("Tile selected: %d\n", position64);
-					}
-				}
-			}
-
-		}
-
 		// Draw the screen
 
-		game.drawBoard();	
+		if (game.getGameState() == MAINMENU)
+		{
+			game.drawMainMenu(x,y);
+		}
+		else if (game.getGameState() == PLAYING)
+		{
+			game.drawBoard();	
+		}
 
 		// Run at 30 frames per second
 
@@ -88,5 +65,53 @@ int main()
 	}
 
 	return 0;
+
+}
+
+void parseInputs(int mouseX, int mouseY, SDL_Event *e)
+{
+	while( SDL_PollEvent(e) != 0 )
+	{
+		if( e->type == SDL_QUIT )
+		{
+			run = 0;
+		}
+
+		else if( e->type == SDL_KEYDOWN )
+		{
+			switch( e->key.keysym.sym )
+			{
+				case SDLK_q:
+					{
+						run = 0;
+						break;
+					}
+			}
+		}
+		else if( e->type == SDL_MOUSEBUTTONDOWN )
+		{
+			if (game.getGameState() == MAINMENU)
+			{
+				game.mouseButtonEvent(mouseX, mouseY);
+			}
+						
+			else if(mouseX<480)
+			{
+				int x = mouseX/TILE_SIZE+1;
+				int y = mouseY/TILE_SIZE;
+				y = 8-y;
+
+				int position64 = (y-1)*8 + (x-1);
+				int position120 = 21 + x + 10*(y-1);
+
+				if( (position120 > 21) && (position120 < 100) )
+				{
+					game.selectTile(position64);
+					printf("Tile selected: %d\n", position64);
+				}
+			}
+		}
+
+	}
 
 }

@@ -22,6 +22,7 @@ class Board
 		list<Piece*> getWhitePieces();
 		list<Piece*> getBlackPieces();
 		void addPiece(int position120, Colour colour, PieceType pieceType, bool firstMove);
+		void clearBoard();
 		void removePiece(int position120);
 		void movePiece(uint32_t move);
 		Colour getCurrPlayer();
