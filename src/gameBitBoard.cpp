@@ -96,6 +96,7 @@ void GameBitBoard::moveUpdateBitBoard(Colour colour, uint32_t move)
 {
 	int start = (move)&0x7f;
 	int dest=(move >> 7)&0x7f;
+	int enPas = 120;
 
 	int start64=board120to64[start];
 	int dest64=board120to64[dest];
@@ -133,6 +134,10 @@ void GameBitBoard::moveUpdateBitBoard(Colour colour, uint32_t move)
 	if (start == mBlackKingPosition120)
 	{
 		mBlackKingPosition120 = dest;
+	}
+	if ( (move>>15)&1 )
+	{
+		mEnPas = (move>>16)&0x7f;
 	}
 
 	mBothBitBoards = mWhiteBitBoard | mBlackBitBoard;

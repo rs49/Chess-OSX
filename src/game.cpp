@@ -94,6 +94,27 @@ void Game::selectTile(int position)
 	if(mBoard.isWhitePiece(position))
 	{
 		mSelectedPiece = 1;
+		printf("enPas: %d\n", (mBoard.getGameBitBoard()).getEnPas());
+		list<Piece*> playerPieces;
+		list<Piece*>::iterator piece_it;
+
+		(mBoard.getCurrPlayer() == WHITE)
+		? playerPieces = mBoard.getWhitePieces() :
+		  playerPieces = mBoard.getBlackPieces();
+		for(piece_it=playerPieces.begin(); piece_it != playerPieces.end(); piece_it++)
+		{
+			if( board120to64[ (*piece_it)->getPosition() ] == mSelectedTile)
+			{
+				list<uint32_t>::iterator move_it;
+				list<uint32_t> moveList = (*piece_it)->getLegalMoves(&mBoard);
+
+				for(move_it=moveList.begin(); move_it != moveList.end(); move_it++)
+				{
+					printf("start: %d, end: %d\n", *move_it&0x7f, (*move_it>>7)&0x7f);
+				}
+			}
+		}
+
 	}
 	else if (mBoard.isBlackPiece(position))
 	{

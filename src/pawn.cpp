@@ -39,7 +39,9 @@ list<uint32_t> Pawn::getPotentialMoves(GameBitBoard gameBitBoard)
 		}
 		
 	}
-	
+
+	int enPas120;
+
 	if (isFirstMove())
 	{
 		testTile = testTile+testDirection;
@@ -48,12 +50,67 @@ list<uint32_t> Pawn::getPotentialMoves(GameBitBoard gameBitBoard)
 		if(isValidTile(testTile))
 		{
 			if(gameBitBoard.isTileFree(testTile64))
-			{	
+			{
+				enPas120 = getPosition() + testDirection;	
+				moveToAdd |= uint32_t(1)<<15;
+				moveToAdd |= (enPas120 << 16);
 				moves.push_back(moveToAdd | (testTile<<7));
 			}
 			
 		}
 	}
+
+	
+	int attack_dir[2] = {9, 11};
+	int board_dir;
+	getColour() == WHITE ? board_dir = 1 : board_dir = -1;
+
+
+	for (int i = 0; i < sizeof(attack_dir)/sizeof(attack_dir[0]); i++)
+	{
+		moveToAdd = uint32_t(getPosition());
+		testTile = getPosition()+attack_dir[i]*board_dir;
+		testTile64 = board120to64[testTile];
+		if(isValidTile(testTile))
+		{
+
+			if(~gameBitBoard.isTileFree(testTile64))
+			{
+				if (getColour() == WHITE)
+				{
+					if(gameBitBoard.isBlackPiece(testTile64))
+					{
+						moveToAdd |= (1<<14);
+
+						moves.push_back(moveToAdd | (testTile<<7));
+					}
+				}
+				else
+				{
+					if(gameBitBoard.isWhitePiece(testTile64))
+					{
+						moveToAdd |= (1<<14);
+
+						moves.push_back(moveToAdd | (testTile<<7));
+					}
+				}
+
+			}
+			if( int(gameBitBoard.getEnPas()) == int(testTile) )
+			{
+				//moveToAdd |= (1<<14);
+
+				moves.push_back(moveToAdd | (testTile<<7));
+
+
+			}
+		}
+
+
+
+	}
+	
+	
 
 
 	return moves;

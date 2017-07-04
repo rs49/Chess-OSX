@@ -81,7 +81,7 @@ list<uint32_t> Piece::getLegalMoves(Board *gameBoard)
 
 	for(it = moves.begin(); it != moves.end(); it++)
 	{
-		if( (*it)>>14 )
+		if( (*it)>>14 ==1)
 		{
 			
 			Piece targetPiece = gameBoard->getPieceAtPosition( ((*it)>>7)&0x7f );
@@ -115,7 +115,7 @@ list<uint32_t> Piece::getLegalMoves(Board *gameBoard)
 			}
 
 		}
-		if( (*it)>>14 )
+		if( (*it)>>14 ==1)
 		{
 			//printf("adding %d\n", tempPiece.getPosition());
 			gameBoard->addPiece( ((*it)>>7)&0x7f, tempPiece.getColour(), tempPiece.getPieceType() , tempPiece.isFirstMove());

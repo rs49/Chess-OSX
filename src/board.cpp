@@ -134,6 +134,7 @@ void Board::movePiece(uint32_t move)
 	uint32_t startPos = (move & 0x7f);
 	uint32_t destPos = ((move>>7) & 0x7f);
 
+	int enPas = 120;
 
 	list<Piece*> playerPieces;
 	list<Piece*>::iterator piece_it;
@@ -150,6 +151,12 @@ void Board::movePiece(uint32_t move)
 				(*piece_it)->setFirstMoveFalse();
 			}
 
+			if ( (move>>15) & 1 )
+			{
+				enPas = (move>>16) & 0x7f;	
+				
+			}
+			
 			if (move >> 14)
 			{
 				removePiece(destPos);
@@ -157,7 +164,7 @@ void Board::movePiece(uint32_t move)
 
 			(*piece_it)->setPosition(destPos);
 
-			mGameBitBoard.update(mWhitePieces, mBlackPieces, 120);
+			mGameBitBoard.update(mWhitePieces, mBlackPieces, enPas);
 
 			if(isPlayerAttackingKing(mCurrPlayer,mGameBitBoard))
 			{
