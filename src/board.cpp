@@ -154,12 +154,18 @@ void Board::movePiece(uint32_t move)
 			if ( (move>>15) & 1 )
 			{
 				enPas = (move>>16) & 0x7f;	
+				mEnPasPawn120 = (move>>7)&0x7f;
 				
 			}
-			
-			if (move >> 14)
+						
+			if ((move >> 14) & 1)
 			{
 				removePiece(destPos);
+			}
+
+			if ((move >> 23) & 1)
+			{
+				removePiece(mEnPasPawn120);
 			}
 
 			(*piece_it)->setPosition(destPos);

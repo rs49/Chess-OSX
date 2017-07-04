@@ -11,6 +11,7 @@ class GameBitBoard
 		int mWhiteKingPosition120;
 		int mBlackKingPosition120;
 		int mEnPas;
+		int mEnPasPawn120;
 
 	public:
 		void update(list<Piece*> whitePieces, list<Piece*> blackPieces, int enpas);

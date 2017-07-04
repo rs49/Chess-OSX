@@ -48,6 +48,9 @@ class Game
 
 		SDL_Texture *mGearTexture;
 		SDL_Texture *mGearTexture_mouseover;
+
+		SDL_Texture *mLogoTexture;
+		SDL_Texture *mAuthorTexture;
 		
 
 	public:

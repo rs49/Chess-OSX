@@ -117,7 +117,7 @@ void parseInputs(int mouseX, int mouseY, SDL_Event *e)
 				if( (position120 > 21) && (position120 < 100) )
 				{
 					game.selectTile(position64);
-					printf("Tile selected: %d\n", position64);
+					//printf("Tile selected: %d\n", position64);
 				}
 			}
 			else

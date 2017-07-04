@@ -94,27 +94,7 @@ void Game::selectTile(int position)
 	if(mBoard.isWhitePiece(position))
 	{
 		mSelectedPiece = 1;
-		printf("enPas: %d\n", (mBoard.getGameBitBoard()).getEnPas());
-		list<Piece*> playerPieces;
-		list<Piece*>::iterator piece_it;
-
-		(mBoard.getCurrPlayer() == WHITE)
-		? playerPieces = mBoard.getWhitePieces() :
-		  playerPieces = mBoard.getBlackPieces();
-		for(piece_it=playerPieces.begin(); piece_it != playerPieces.end(); piece_it++)
-		{
-			if( board120to64[ (*piece_it)->getPosition() ] == mSelectedTile)
-			{
-				list<uint32_t>::iterator move_it;
-				list<uint32_t> moveList = (*piece_it)->getLegalMoves(&mBoard);
-
-				for(move_it=moveList.begin(); move_it != moveList.end(); move_it++)
-				{
-					printf("start: %d, end: %d\n", *move_it&0x7f, (*move_it>>7)&0x7f);
-				}
-			}
-		}
-
+	
 	}
 	else if (mBoard.isBlackPiece(position))
 	{
@@ -353,6 +333,10 @@ void Game::initAssets()
 	loadTexture(&mGearTexture,"buttons/gear.png");
 	loadTexture(&mGearTexture_mouseover,"buttons/gear_mouseover.png");
 
+	loadTexture(&mLogoTexture,"buttons/logo.png");
+	loadTexture(&mAuthorTexture,"buttons/author.png");
+	
+
 
 	// main menu - new game coordinates
 	SDL_Rect button;
@@ -363,6 +347,8 @@ void Game::initAssets()
 	button.h = 50;
 
 	mMainMenu_NewGame = button;
+
+	
 	 
 	// main menu - exit coordinate
 	button.y = 300;
@@ -372,11 +358,17 @@ void Game::initAssets()
 	button.y = 100;
 	mOptions_Resume = button;
 
+	// playing - after checkmate
+	
+	button.x = 500;
+	button.y = 10;
+	mPlaying_NewGame = button;
+
 	// while playing - gear coordinate
 	button.x = 590;
 	button.y = 430;
-	button.w = 50;
-	button.h = 50;
+	button.w = 40;
+	button.h = 40;
 
 	mPlaying_Options = button;
 
@@ -401,7 +393,25 @@ void Game::loadTexture(SDL_Texture **targetTexture, string pathName)
 
 void Game::drawMainMenu(int mouseX, int mouseY)
 {
+	SDL_Rect renderQuad;
+	renderQuad.x = 640/2-100;
+	renderQuad.y = 20;
+	renderQuad.w = 200;
+	renderQuad.h = 100;
+
+	SDL_SetRenderDrawColor(renderer, 255, 244, 142, 0);
 	SDL_RenderClear(renderer);
+
+	SDL_RenderCopy(renderer, mLogoTexture, NULL, &renderQuad);
+
+	renderQuad.x = 0;
+	renderQuad.y = 430;
+	renderQuad.w = 200;
+	renderQuad.h = 50;
+	
+	SDL_RenderCopy(renderer, mAuthorTexture, NULL, &renderQuad);
+
+
 
 	(isPointInsideBox(mouseX, mouseY, mMainMenu_NewGame))
 	? SDL_RenderCopy(renderer, mNewGameTexture_mouseover, NULL, &mMainMenu_NewGame) :
@@ -416,6 +426,7 @@ void Game::drawMainMenu(int mouseX, int mouseY)
 
 void Game::drawOptionsMenu(int mouseX, int mouseY)
 {
+	SDL_SetRenderDrawColor(renderer, 255, 244, 142, 0);
 	SDL_RenderClear(renderer);
 
 	(isPointInsideBox(mouseX, mouseY, mOptions_Resume))
@@ -456,6 +467,10 @@ void Game::mouseButtonEvent(int mouseX, int mouseY)
 		{
 			newGame();
 		}
+		if(isPointInsideBox(mouseX, mouseY, mMainMenu_Exit))
+		{
+			run = 0;
+		}
 	}
 	else if (mGameState == PLAYING)
 	{
@@ -470,6 +485,11 @@ void Game::mouseButtonEvent(int mouseX, int mouseY)
 		if(isPointInsideBox(mouseX, mouseY, mPlaying_NewGame))
 		{
 			newGame();
+		}
+
+		if(isPointInsideBox(mouseX, mouseY, mPlaying_Options))
+		{
+			mGameState = OPTIONS;
 		}
 	}
 

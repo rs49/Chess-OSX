@@ -8,8 +8,11 @@ Pawn::Pawn(int position120, Colour colour, bool firstMove) :
 /*
  * move structure:
  * bits 0-6: 	the inital position.
- * bits 7-13: 	the destination position
- * bit 	14: 	determines if it is capturing an enemy piece
+ * bits 7-13: 	the destination position.
+ * bit 	14: 	determines if it is capturing an enemy piece.
+ * bit	15:	determines if the move is a pawn jump.
+ * bits	16-22: 	The En Passant square.
+ * bit	23:	determines if the move is an En Passant capture
  *
  * Attacking moves are at the begining of the list and passive (non-capturing)
  * moves are at the end of the list. This is for future AI.
@@ -54,7 +57,7 @@ list<uint32_t> Pawn::getPotentialMoves(GameBitBoard gameBitBoard)
 				enPas120 = getPosition() + testDirection;	
 				moveToAdd |= uint32_t(1)<<15;
 				moveToAdd |= (enPas120 << 16);
-				moves.push_back(moveToAdd | (testTile<<7));
+				moves.push_front(moveToAdd | (testTile<<7));
 			}
 			
 		}
@@ -96,9 +99,9 @@ list<uint32_t> Pawn::getPotentialMoves(GameBitBoard gameBitBoard)
 				}
 
 			}
-			if( int(gameBitBoard.getEnPas()) == int(testTile) )
+			if( gameBitBoard.getEnPas() == testTile )
 			{
-				//moveToAdd |= (1<<14);
+				moveToAdd |= (1<<23);
 
 				moves.push_back(moveToAdd | (testTile<<7));
 

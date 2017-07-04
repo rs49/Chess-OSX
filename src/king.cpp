@@ -6,6 +6,20 @@ King::King(int position120, Colour colour, bool firstMove) :
 {
 }
 
+/*
+ * move structure:
+ * bits 0-6: 	the inital position.
+ * bits 7-13: 	the destination position.
+ * bit 	14: 	determines if it is capturing an enemy piece.
+ * bit	15:	determines if the move is a pawn jump.
+ * bits	16-22: 	The En Passant square.
+ * bit	23:	determines if the move is an En Passant capture
+ *
+ * Attacking moves are at the begining of the list and passive (non-capturing)
+ * moves are at the end of the list. This is for future AI.
+ */
+
+
 list<uint32_t> King::getPotentialMoves(GameBitBoard gameBitBoard)
 {
 	list<uint32_t> moves;
@@ -33,7 +47,7 @@ list<uint32_t> King::getPotentialMoves(GameBitBoard gameBitBoard)
 					{
 						moveToAdd |= (1<<14); //capture
 						moveToAdd |= (testTile<<7);
-						moves.push_back(moveToAdd);
+						moves.push_front(moveToAdd);
 
 					}
 				}
@@ -43,7 +57,7 @@ list<uint32_t> King::getPotentialMoves(GameBitBoard gameBitBoard)
 					{
 						moveToAdd |= (1<<14); //capture
 						moveToAdd |= (testTile<<7);
-						moves.push_back(moveToAdd);
+						moves.push_front(moveToAdd);
 
 					}
 				}
@@ -51,6 +65,17 @@ list<uint32_t> King::getPotentialMoves(GameBitBoard gameBitBoard)
 		}
 
 	}
+
+	// check castling
+	// todo
+	/*
+	if(isFirstMove() && 
+		gameBitBoard.isTileFree(getPosition()+1) &&
+		gameBitBoard.isTileFree(getPosition()+2) )
+	{
+
+	}
+	*/
 
 	return moves;
 }

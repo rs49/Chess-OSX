@@ -17,6 +17,7 @@ class Board
 		bool mCurrPlayerInCheck = false;
 		bool mCurrPlayerInCheckmate = false;
 		GameBitBoard mGameBitBoard;
+		int mEnPasPawn120;
 
 	public:
 		list<Piece*> getWhitePieces();
