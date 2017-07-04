@@ -6,7 +6,7 @@
 
 void parseInputs(int mouseX, int mouseY, SDL_Event *e);
 
-int run = 1;
+//int run = 1;
 
 int main()
 {
@@ -50,10 +50,15 @@ int main()
 		{
 			game.drawMainMenu(x,y);
 		}
-		else if (game.getGameState() == PLAYING)
+		else if ( (game.getGameState() == PLAYING) || (game.getGameState() == CHECKMATE) )
 		{
-			game.drawBoard();	
+			game.drawBoard(x,y);	
 		}
+		else if (game.getGameState() == OPTIONS)
+		{
+			game.drawOptionsMenu(x, y);
+		}
+
 
 		// Run at 30 frames per second
 
@@ -94,9 +99,14 @@ void parseInputs(int mouseX, int mouseY, SDL_Event *e)
 			{
 				game.mouseButtonEvent(mouseX, mouseY);
 			}
+			else if (game.getGameState() == OPTIONS)
+			{
+				game.mouseButtonEvent(mouseX, mouseY);
+			}
 						
 			else if(mouseX<480)
 			{
+				
 				int x = mouseX/TILE_SIZE+1;
 				int y = mouseY/TILE_SIZE;
 				y = 8-y;
@@ -109,6 +119,10 @@ void parseInputs(int mouseX, int mouseY, SDL_Event *e)
 					game.selectTile(position64);
 					printf("Tile selected: %d\n", position64);
 				}
+			}
+			else
+			{
+				game.mouseButtonEvent(mouseX, mouseY);
 			}
 		}
 

@@ -16,6 +16,8 @@ class Game
 		SDL_Rect mMainMenu_NewGame;
 		SDL_Rect mMainMenu_Exit;
 		SDL_Rect mPlaying_NewGame;
+		SDL_Rect mPlaying_Options;
+		SDL_Rect mOptions_Resume;
 
 		SDL_Texture *mWhitePawnTexture;
 		SDL_Texture *mWhiteKnightTexture;
@@ -43,16 +45,21 @@ class Game
 		SDL_Texture *mExitTexture_mouseover;
 		SDL_Texture *mResumeTexture;
 		SDL_Texture *mResumeTexture_mouseover;
+
+		SDL_Texture *mGearTexture;
+		SDL_Texture *mGearTexture_mouseover;
 		
 
 	public:
+		void newGame();
 		void newBoard();
 		void selectTile(int position);
-		void drawBoard();
+		void drawBoard(int mouseX, int mouseY);
 		void drawPiece(Colour colour, PieceType pieceType, int position120);
 		void initAssets();
 		void loadTexture(SDL_Texture **targetTexture, string pathName);
 		void drawMainMenu(int mouseX, int mouseY);
+		void drawOptionsMenu(int mouseX, int mouseY);
 		bool isPointInsideBox(int x, int y, SDL_Rect box);
 		void mouseButtonEvent(int mouseX, int mouseY);
 		GameState getGameState();

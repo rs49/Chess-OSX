@@ -99,6 +99,8 @@ void Board::clearBoard()
 		mWhitePieces.erase(piece_it);
 	}
 
+	mCurrPlayerInCheck = false;
+	mCurrPlayerInCheckmate = false;
 
 
 }

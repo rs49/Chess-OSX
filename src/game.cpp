@@ -4,6 +4,13 @@
 //#include <SDL2/SDL.h>
 //#include <SDL2_image/SDL_image.h>
 
+void Game::newGame()
+{
+	mGameState = PLAYING;
+	mBoard.clearBoard();
+	newBoard();
+
+}
 
 void Game::newBoard()
 {
@@ -98,9 +105,9 @@ void Game::selectTile(int position)
 	}
 }
 
-void Game::drawBoard()
+void Game::drawBoard(int mouseX, int mouseY)
 {
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	SDL_SetRenderDrawColor(renderer, 255, 244, 142, 0);
 	SDL_RenderClear(renderer);
 
 	SDL_Rect tile = { 0, 0, TILE_SIZE, TILE_SIZE};
@@ -186,8 +193,14 @@ void Game::drawBoard()
 	// Draw if it is check or checkmate
 	if (mBoard.isCurrPlayerInCheckmate())
 	{
+		mGameState = CHECKMATE;
 		renderQuad.y = 100;
 		SDL_RenderCopy(renderer, mCheckmateTexture, NULL, &renderQuad) ;
+
+		(isPointInsideBox(mouseX, mouseY, mPlaying_NewGame))
+		? SDL_RenderCopy(renderer, mNewGameTexture_mouseover, NULL, &mPlaying_NewGame) :
+		  SDL_RenderCopy(renderer, mNewGameTexture, NULL, &mPlaying_NewGame);
+
 
 	}
 	else
@@ -203,6 +216,10 @@ void Game::drawBoard()
 			SDL_RenderCopy(renderer, mCheckTexture, NULL, &renderQuad) ;
 		}
 	}
+
+	(isPointInsideBox(mouseX, mouseY, mPlaying_Options))
+	? SDL_RenderCopy(renderer, mGearTexture_mouseover, NULL, &mPlaying_Options) :
+	  SDL_RenderCopy(renderer, mGearTexture, NULL, &mPlaying_Options);
 
 
 	
@@ -309,7 +326,14 @@ void Game::initAssets()
 	loadTexture(&mNewGameTexture_mouseover,"buttons/newGame_mouseover.png");
 	loadTexture(&mExitTexture,"buttons/exit.png");
 	loadTexture(&mExitTexture_mouseover,"buttons/exit_mouseover.png");
+	loadTexture(&mResumeTexture,"buttons/resume.png");
+	loadTexture(&mResumeTexture_mouseover,"buttons/resume_mouseover.png");
 
+	loadTexture(&mGearTexture,"buttons/gear.png");
+	loadTexture(&mGearTexture_mouseover,"buttons/gear_mouseover.png");
+
+
+	// main menu - new game coordinates
 	SDL_Rect button;
 
 	button.x = 640/2 - 60;
@@ -318,9 +342,22 @@ void Game::initAssets()
 	button.h = 50;
 
 	mMainMenu_NewGame = button;
-	
+	 
+	// main menu - exit coordinate
 	button.y = 300;
 	mMainMenu_Exit = button;
+
+	// options menu - resume coordinates
+	button.y = 100;
+	mOptions_Resume = button;
+
+	// while playing - gear coordinate
+	button.x = 590;
+	button.y = 430;
+	button.w = 50;
+	button.h = 50;
+
+	mPlaying_Options = button;
 
 
 }
@@ -346,15 +383,36 @@ void Game::drawMainMenu(int mouseX, int mouseY)
 	SDL_RenderClear(renderer);
 
 	(isPointInsideBox(mouseX, mouseY, mMainMenu_NewGame))
-	? SDL_RenderCopy(renderer, mNewGameTexture, NULL, &mMainMenu_NewGame) :
-	  SDL_RenderCopy(renderer, mNewGameTexture_mouseover, NULL, &mMainMenu_NewGame);
+	? SDL_RenderCopy(renderer, mNewGameTexture_mouseover, NULL, &mMainMenu_NewGame) :
+	  SDL_RenderCopy(renderer, mNewGameTexture, NULL, &mMainMenu_NewGame);
 
 	(isPointInsideBox(mouseX, mouseY, mMainMenu_Exit))
-	? SDL_RenderCopy(renderer, mExitTexture, NULL, &mMainMenu_Exit) :
-	  SDL_RenderCopy(renderer, mExitTexture_mouseover, NULL, &mMainMenu_Exit);
+	? SDL_RenderCopy(renderer, mExitTexture_mouseover, NULL, &mMainMenu_Exit) :
+	  SDL_RenderCopy(renderer, mExitTexture, NULL, &mMainMenu_Exit);
 
 	SDL_RenderPresent(renderer);
 }
+
+void Game::drawOptionsMenu(int mouseX, int mouseY)
+{
+	SDL_RenderClear(renderer);
+
+	(isPointInsideBox(mouseX, mouseY, mOptions_Resume))
+	? SDL_RenderCopy(renderer, mResumeTexture_mouseover, NULL, &mOptions_Resume) :
+	  SDL_RenderCopy(renderer, mResumeTexture, NULL, &mOptions_Resume) ;
+
+
+	(isPointInsideBox(mouseX, mouseY, mMainMenu_NewGame))
+	? SDL_RenderCopy(renderer, mNewGameTexture_mouseover, NULL, &mMainMenu_NewGame) :
+	  SDL_RenderCopy(renderer, mNewGameTexture, NULL, &mMainMenu_NewGame);
+
+	(isPointInsideBox(mouseX, mouseY, mMainMenu_Exit))
+	? SDL_RenderCopy(renderer, mExitTexture_mouseover, NULL, &mMainMenu_Exit) :
+	  SDL_RenderCopy(renderer, mExitTexture, NULL, &mMainMenu_Exit);
+
+	SDL_RenderPresent(renderer);
+}
+
 
 bool Game::isPointInsideBox(int x, int y, SDL_Rect box)
 {
@@ -375,16 +433,40 @@ void Game::mouseButtonEvent(int mouseX, int mouseY)
 	{
 		if(isPointInsideBox(mouseX, mouseY, mMainMenu_NewGame))
 		{
-			mGameState = PLAYING;
-			mBoard.clearBoard();
-			newBoard();
+			newGame();
 		}
 	}
 	else if (mGameState == PLAYING)
 	{
+		if(isPointInsideBox(mouseX, mouseY, mPlaying_Options))
+		{
+			mGameState = OPTIONS;
+		}
+
 	}
+	else if (mGameState == CHECKMATE)
+	{
+		if(isPointInsideBox(mouseX, mouseY, mPlaying_NewGame))
+		{
+			newGame();
+		}
+	}
+
 	else if (mGameState == OPTIONS)
 	{
+		if(isPointInsideBox(mouseX, mouseY, mOptions_Resume))
+		{
+			mGameState = PLAYING;
+		}
+		if(isPointInsideBox(mouseX, mouseY, mMainMenu_NewGame))
+		{
+			newGame();
+		}
+		if(isPointInsideBox(mouseX, mouseY, mMainMenu_Exit))
+		{
+			run = 0;
+		}
+
 	}
 
 
