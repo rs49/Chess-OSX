@@ -51,7 +51,7 @@ class Game
 
 		SDL_Texture *mLogoTexture;
 		SDL_Texture *mAuthorTexture;
-		
+
 
 	public:
 		void newGame();

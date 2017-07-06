@@ -169,7 +169,16 @@ void Game::drawBoard(int mouseX, int mouseY)
 			tile.x = TILE_SIZE*(position64%8);
 			tile.y = TILE_SIZE*(7-position64/8);
 
+			
+			
+			SDL_SetRenderDrawColor(renderer, 50, 50, 200, 0);
 			SDL_RenderFillRect(renderer, &tile);
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+			SDL_RenderDrawRect(renderer, &tile);
+			
+			//SDL_RenderCopy(renderer, mBlueDotTexture, NULL, &tile);
+
+
 		}
 	}
 	
@@ -335,7 +344,6 @@ void Game::initAssets()
 
 	loadTexture(&mLogoTexture,"buttons/logo.png");
 	loadTexture(&mAuthorTexture,"buttons/author.png");
-	
 
 
 	// main menu - new game coordinates
