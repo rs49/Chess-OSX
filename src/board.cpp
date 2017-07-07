@@ -175,7 +175,7 @@ void Board::movePiece(uint32_t move)
 			if(isPlayerAttackingKing(mCurrPlayer,mGameBitBoard))
 			{
 				mCurrPlayerInCheck = true;
-				printf("Check");
+				//printf("Check");
 			}
 			else
 			{
@@ -186,7 +186,7 @@ void Board::movePiece(uint32_t move)
 
 			if(isCurrPlayerInCheckmate())
 			{
-				printf("checkmate\n");
+				//printf("checkmate\n");
 			}
 			break;
 		}
