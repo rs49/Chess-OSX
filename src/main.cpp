@@ -86,11 +86,11 @@ void parseInputs(int mouseX, int mouseY, SDL_Event *e)
 		{
 			switch( e->key.keysym.sym )
 			{
-				case SDLK_q:
+				/*case SDLK_q:
 					{
 						run = 0;
 						break;
-					}
+					}*/
 			}
 		}
 		else if( e->type == SDL_MOUSEBUTTONDOWN )
